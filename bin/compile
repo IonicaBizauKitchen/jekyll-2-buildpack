@@ -1,0 +1,27 @@
+#!/bin/sh
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+message() {
+  echo "-----> $*"
+}
+
+# Install Jekyll into APP_ROOT/.gems
+cat << EOF > ~/.gemrc
+gemhome: $1/.gems
+gempath:
+- $1/.gems
+EOF
+
+message "Installing jekyll version 2.0.3"
+/usr/local/bin/gem install jekyll -v 2.0.3 --no-rdoc --no-ri | indent
+
+message "Setting environment variables"
+export GEM_HOME=$1/.gems
+export PATH=$1/.gems/bin:$PATH
+export LC_ALL=en_US.UTF8
+cd $1
+message "Compiling Jekyll site"
+$1/.gems/bin/jekyll --no-auto --no-server --no-lsi --safe | indent
